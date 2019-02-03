@@ -1,11 +1,11 @@
 # Shell project for small local apps with a web interface
 
-## What is it
-This is just a basic shell app for making small **local** applications running on one computer or on a loca network. Think of this as the same kind of interface as pgadmin and the like uses. This is intended to work offline, but if you use jQuery remember to include that since we get that through a CDN.
+## What is is
+This is just a basic shell app for making small **local** applications running on one computer or on a local network. A major goal is to only have to distribute **one** file to users. Think of this as the same kind of interface as pgadmin and the like uses. This is intended to work offline, but if you use jQuery remember to include that since we get that through a CDN.
 
 ## Running it
 
-Clone this repository. Run `cargo run` or `cargo build --release` and run the executable. On Windows you should get a web browser to open at the right address. On osx/linux you need to edit `start()` in `src/web.rs` and replace this Command with the suitable one for your operating system: 
+Clone this repository. Run `cargo run` or `cargo build --release` and run the executable. On Windows you should get a web browser to open at the right address. It should work on Windows, OSX and Linux but if it's only tested on Windows and OSX. If it doesn't work on your platform edit `start()` in `src/web.rs` and add Command suitable for your operating system: 
 
 ```rust
 Command::new("cmd").args(&["/C", &start_command]).spawn()?;
@@ -32,7 +32,7 @@ Main application entry point. Kept to a minimum. Hooks up web server.
 
 ### web.rs
 
-The web server. When the server finds a available port to use (by default it tries in the range 8080-8090 before it stops), we start the web browser and points it to our webpage. **This is only set up for windows. We'll need to add a `cfg` flag seperating the shell commands between windows and osx/linux it you want it to work there**. Look here for further info: [https://doc.rust-lang.org/beta/std/process/struct.Command.html][link1]
+The web server. When the server finds a available port to use (by default it tries in the range 8080-8090 before it stops), we start the web browser and points it to our webpage. Look here for further info: [https://doc.rust-lang.org/beta/std/process/struct.Command.html][link1]
 
 ### data.rs
 
@@ -44,6 +44,14 @@ Sql scripts, especially for creating/dropping the database.
 
 ## Intended use
 Create new routes in the web module. Edit `site.css` to add more custom styles. Javascript is intended to go in the bottom of the html pages.
+
+## TODO
+
+* Add a better logging solution
+* Consider an external config file/env etc. for easier configuration (ip, port ranges etc) - however the ease of distributing only one file is the major goal.
+* Organize the data access module to a repository pattern for a better boilerplate start
+* Bootstrap gives an error not finding popper.js, probably some registration needed but I haven't figured that out yet
+* Suggestions?
 
 ## How it looks
 

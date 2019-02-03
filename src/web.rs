@@ -5,12 +5,10 @@ use rouille::{router, Request, Response};
 use serde_json::json;
 use std::process::Command;
 
-
 const CSS: &str = include_str!("../www/assets/bootstrap-material-design.min.css");
 const CSS_SITE: &str = include_str!("../www/assets/site.css");
 const JS: &str = include_str!("../www/assets/bootstrap-material-design.min.js");
 const POPPER_JS: &str = include_str!("../www/assets/popper.min.js");
-
 
 pub fn start(port: Option<u32>) -> Res<()> {
     let port = port.unwrap_or(8080);
@@ -30,9 +28,19 @@ pub fn start(port: Option<u32>) -> Res<()> {
         }
 
         Ok(server) => {
-            let start_command = String::from("start http://localhost:");
-            let start_command = start_command + port.to_string().as_str();
-            Command::new("cmd").args(&["/C", &start_command]).spawn()?;
+            let base_address = "http://localhost:";
+            let port = &port.to_string();
+            if cfg!(target_os = "windows") {
+                let start_command = String::from("start ") + base_address + port;
+                Command::new("cmd").args(&["/C", &start_command]).spawn()?;
+            } else if cfg!(target_os = "macos") {
+                let start_command = String::from("open ") + base_address + port;
+                Command::new("sh").args(&["-c", &start_command]).spawn()?;
+            } else {
+                // should be the most cross platform method for opening the browser
+                let start_command = String::from("xdg-open ") + base_address + port;
+                Command::new("sh").args(&["-c", &start_command]).spawn()?;
+            }
             server.run();
             Ok(())
         }
@@ -83,7 +91,6 @@ fn popper_js_handler(req: &Request) -> Res<Response> {
     Ok(Response::from_data("text/javascript", POPPER_JS))
 }
 
-
 /// This method should be removed but is good for just testing the setup
 fn seed_database(req: &Request) -> Res<Response> {
     data::seed()?;
@@ -92,7 +99,6 @@ fn seed_database(req: &Request) -> Res<Response> {
 }
 
 fn get_registrations(req: &Request) -> Res<Response> {
-    
     let conn = data::connect()?;
 
     let registrations = data::Registration::find_registrations(&conn, "true", rusqlite::NO_PARAMS)?;
@@ -105,5 +111,4 @@ fn get_registrations(req: &Request) -> Res<Response> {
     // ----------------
 
     Ok(Response::json(&registrations))
-    
 }
