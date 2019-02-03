@@ -63,7 +63,8 @@
                 <div class="container">
                     <h1 class="display-3">{{title}}</h1>
                     <p>{{body}}</p>
-                    <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+                    <p><a id="mainbtn" class="btn btn-primary btn-lg" href="#" role="button">Seed the database by clicking here! &raquo;</a></p>
+                    <p>You should be able to retrieve data by going to localhost:[portnumber]/registrations</p>
                 </div>
             </div>
         
@@ -107,10 +108,20 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
     <script src="/js"></script>
+    <script src="/popper"></script>
     <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
 </body>
 
 </html>
+
+<script>
+    $("#mainbtn").on('click', (event) => {
+        event.preventDefault();
+        $.getJSON("/seed_database", (res) => {
+            alert('Database seeded! Write ".../registrations" in the address bar to se the json from the db call.');
+        });
+    });
+</script>

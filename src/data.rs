@@ -2,6 +2,7 @@ use crate::Res;
 use chrono::{Datelike, NaiveDateTime};
 use rusqlite;
 use rusqlite::{types::ToSql, Connection};
+use serde::Serialize;
 
 pub fn connect() -> Res<Connection> {
     Connection::open("data.db").map_err(|e| e.into())
@@ -16,6 +17,22 @@ pub fn create() -> Res<()> {
     Ok(())
 }
 
+pub fn seed() -> Res<()> {
+    let conn = connect()?;
+
+    let drop_sql = include_str!("../sql_files/drop.sql");
+    conn.execute_batch(drop_sql)?;
+
+    create()?;
+
+    let reg1 = Registration::new(chrono::Local::now().naive_local(), 1, 100);
+    reg1.save(&conn)?;
+    let reg2 = Registration::new(chrono::Local::now().naive_local(), 2, 440);
+    reg2.save(&conn)?;
+
+    Ok(())
+}
+
 pub fn drop() -> Res<()> {
     let conn = connect()?;
     let sql = include_str!("../sql_files/drop.sql");
@@ -25,7 +42,7 @@ pub fn drop() -> Res<()> {
     Ok(())
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Registration {
     id: i32,
     date: String,

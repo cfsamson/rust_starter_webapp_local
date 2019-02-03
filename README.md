@@ -3,6 +3,14 @@
 ## What is it
 This is just a basic shell app for making small **local** applications running on one computer or on a loca network. Think of this as the same kind of interface as pgadmin and the like uses. This is intended to work offline, but if you use jQuery remember to include that since we get that through a CDN.
 
+## Running it
+
+Clone this repository. Run `cargo run` or `cargo build --release` and run the executable. On Windows you should get a web browser to open at the right address. On osx/linux you need to edit `start()` in `src/web.rs` and replace this Command with the suitable one for your operating system: 
+
+```rust
+Command::new("cmd").args(&["/C", &start_command]).spawn()?;
+```
+
 ## Why
 Crating user interfaces like this allows for a lot of reuse and possible scalability in addition this can be used from all devices with a browser even though the application itself must be run on a computer.
 
@@ -36,5 +44,9 @@ Sql scripts, especially for creating/dropping the database.
 
 ## Intended use
 Create new routes in the web module. Edit `site.css` to add more custom styles. Javascript is intended to go in the bottom of the html pages.
+
+## How it looks
+
+![Preview1](https://user-images.githubusercontent.com/8337848/52183756-8d301280-280b-11e9-875b-eaddea9f8cb2.png)
 
 [link1]:https://doc.rust-lang.org/beta/std/process/struct.Command.html

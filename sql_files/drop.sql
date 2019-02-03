@@ -1,2 +1,2 @@
-DROP TABLE registraions;
-DROP TABLE items;
+DROP TABLE IF EXISTS registrations;
+DROP TABLE IF EXISTS items;

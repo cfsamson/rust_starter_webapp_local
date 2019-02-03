@@ -9,6 +9,8 @@ use std::process::Command;
 const CSS: &str = include_str!("../www/assets/bootstrap-material-design.min.css");
 const CSS_SITE: &str = include_str!("../www/assets/site.css");
 const JS: &str = include_str!("../www/assets/bootstrap-material-design.min.js");
+const POPPER_JS: &str = include_str!("../www/assets/popper.min.js");
+
 
 pub fn start(port: Option<u32>) -> Res<()> {
     let port = port.unwrap_or(8080);
@@ -30,7 +32,6 @@ pub fn start(port: Option<u32>) -> Res<()> {
         Ok(server) => {
             let start_command = String::from("start http://localhost:");
             let start_command = start_command + port.to_string().as_str();
-            println!("{}", start_command);
             Command::new("cmd").args(&["/C", &start_command]).spawn()?;
             server.run();
             Ok(())
@@ -44,6 +45,9 @@ fn router(req: &Request) -> Response {
         (GET) (/css) => {css_handler(&req)},
         (GET) (/css/site) => {css_site_handler(&req)},
         (GET) (/js) => {js_handler(&req)},
+        (GET) (/popper) => {popper_js_handler(&req)},
+        (GET) (/registrations) => {get_registrations(&req)},
+        (GET) (/seed_database) => {seed_database(&req)},
         _ => {Ok(Response::text("Not found"))},
     );
 
@@ -75,15 +79,31 @@ fn js_handler(req: &Request) -> Res<Response> {
     Ok(Response::from_data("text/javascript", JS))
 }
 
-// fn query_db_example() -> Res<()> {
+fn popper_js_handler(req: &Request) -> Res<Response> {
+    Ok(Response::from_data("text/javascript", POPPER_JS))
+}
+
+
+/// This method should be removed but is good for just testing the setup
+fn seed_database(req: &Request) -> Res<Response> {
+    data::seed()?;
+
+    Ok(Response::empty_204())
+}
+
+fn get_registrations(req: &Request) -> Res<Response> {
     
-//     let conn = data::connect()?;
+    let conn = data::connect()?;
 
-//     let registraions = data::Registration::find_registrations(&conn, "true", rusqlite::NO_PARAMS)?;
-//     println!("{:?}", registraions);
-//     for reg in registraions {
-//         println!("date is: {}", reg.date()? + chrono::Duration::days(-7));
-//     }
+    let registrations = data::Registration::find_registrations(&conn, "true", rusqlite::NO_PARAMS)?;
 
-//     Ok(())
-// }
+    // Uncomment this part. Only for debugging.
+    println!("{:?}", registrations);
+    for reg in &registrations {
+        println!("date is: {}", reg.date()? + chrono::Duration::days(-7));
+    }
+    // ----------------
+
+    Ok(Response::json(&registrations))
+    
+}
