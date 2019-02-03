@@ -1,0 +1,12 @@
+[package]
+name = "small_app"
+version = "0.1.0"
+authors = ["Carl Fredrik Samson <cf@samson.no>"]
+edition = "2018"
+
+[dependencies]
+rouille = "3.0.0"
+handlebars = "1.1.0"
+rusqlite = {version="0.16.0", features=["bundled"]}
+chrono = "0.4.6"
+serde_json = "1.0.38"
