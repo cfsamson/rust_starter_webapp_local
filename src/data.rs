@@ -4,6 +4,15 @@ use rusqlite;
 use rusqlite::{types::ToSql, Connection};
 use serde::Serialize;
 
+
+struct RegistrationsRepository {
+    
+}
+
+impl RegistrationsRepository {
+
+}
+
 pub fn connect() -> Res<Connection> {
     Connection::open("data.db").map_err(|e| e.into())
 }
