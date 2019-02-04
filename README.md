@@ -1,6 +1,6 @@
 # Shell project for small local apps with a web interface
 
-## What is is
+## What it is
 This is just a basic shell app for making small **local** applications running on one computer or on a local network. A major goal is to only have to distribute **one** file to users. Think of this as the same kind of interface as pgadmin and the like uses. This is intended to work offline, but if you use jQuery remember to include that since we get that through a CDN.
 
 ## Running it
