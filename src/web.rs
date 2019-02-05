@@ -4,6 +4,7 @@ use rouille;
 use rouille::{router, Request, Response};
 use serde_json::json;
 use std::process::Command;
+use crate::data::repository::Repo;
 
 const CSS: &str = include_str!("../www/assets/bootstrap-material-design.min.css");
 const CSS_SITE: &str = include_str!("../www/assets/site.css");
@@ -99,15 +100,13 @@ fn seed_database(req: &Request) -> Res<Response> {
 }
 
 fn get_registrations(req: &Request) -> Res<Response> {
-    let conn = data::connect()?;
+    let mut repo = data::repository::Repository::new()?;
+    let reg_repo = repo.registrations();
 
-    let registrations = data::Registration::find_registrations(&conn, "true", rusqlite::NO_PARAMS)?;
+    let registrations = reg_repo.get_all()?;
 
     // Uncomment this part. Only for debugging.
     println!("{:?}", registrations);
-    for reg in &registrations {
-        println!("date is: {}", reg.date()? + chrono::Duration::days(-7));
-    }
     // ----------------
 
     Ok(Response::json(&registrations))
