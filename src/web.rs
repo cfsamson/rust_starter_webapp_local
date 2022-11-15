@@ -56,7 +56,7 @@ fn router(req: &Request) -> Response {
         (GET) (/popper) => {popper_js_handler(&req)},
         (GET) (/registrations) => {get_registrations(&req)},
         (GET) (/seed_database) => {seed_database(&req)},
-        _ => {Ok(Response::text("Not found"))},
+        _ => Ok(Response::text("Not found")),
     );
 
     match result {
@@ -66,7 +66,7 @@ fn router(req: &Request) -> Response {
 }
 
 fn index_handler(_: &Request) -> Res<Response> {
-    let mut reg = Handlebars::new();
+    let reg = Handlebars::new();
     let template = include_str!("../www/index.handlebars");
     let payload = reg.render_template(
         &template,
@@ -75,33 +75,33 @@ fn index_handler(_: &Request) -> Res<Response> {
     Ok(Response::html(payload))
 }
 
-fn css_handler(req: &Request) -> Res<Response> {
+fn css_handler(_req: &Request) -> Res<Response> {
     Ok(Response::from_data("text/css", CSS))
 }
 
-fn css_site_handler(req: &Request) -> Res<Response> {
+fn css_site_handler(_req: &Request) -> Res<Response> {
     Ok(Response::from_data("text/css", CSS_SITE))
 }
 
-fn js_handler(req: &Request) -> Res<Response> {
+fn js_handler(_req: &Request) -> Res<Response> {
     Ok(Response::from_data("text/javascript", JS))
 }
 
-fn popper_js_handler(req: &Request) -> Res<Response> {
+fn popper_js_handler(_req: &Request) -> Res<Response> {
     Ok(Response::from_data("text/javascript", POPPER_JS))
 }
 
 /// This method should be removed but is good for just testing the setup
-fn seed_database(req: &Request) -> Res<Response> {
+fn seed_database(_req: &Request) -> Res<Response> {
     data::seed()?;
 
     Ok(Response::empty_204())
 }
 
-fn get_registrations(req: &Request) -> Res<Response> {
+fn get_registrations(_req: &Request) -> Res<Response> {
     let conn = data::connect()?;
 
-    let registrations = data::Registration::find_registrations(&conn, "true", rusqlite::NO_PARAMS)?;
+    let registrations = data::Registration::find_registrations(&conn, "true", &[])?;
 
     // Uncomment this part. Only for debugging.
     println!("{:?}", registrations);

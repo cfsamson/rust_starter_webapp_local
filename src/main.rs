@@ -1,9 +1,6 @@
 use chrono;
 use handlebars;
 use rouille;
-use serde;
-
-use chrono::Local;
 
 mod data;
 mod web;
@@ -21,5 +18,3 @@ fn main() -> Res<()> {
 const MAX_PORT: u32 = 8090;
 
 pub type Res<T> = Result<T, Box<dyn std::error::Error>>;
-
-

@@ -33,6 +33,7 @@ pub fn seed() -> Res<()> {
     Ok(())
 }
 
+#[allow(dead_code)]
 pub fn drop() -> Res<()> {
     let conn = connect()?;
     let sql = include_str!("../sql_files/drop.sql");
@@ -78,7 +79,7 @@ impl Registration {
             sql,
             &[
                 &self.date,
-                &self.dateint as &ToSql,
+                &self.dateint as &dyn ToSql,
                 &self.item_id,
                 &self.quantity,
             ],
@@ -92,26 +93,26 @@ impl Registration {
     pub fn find_registrations(
         conn: &Connection,
         where_stmt: &str,
-        params: &[&ToSql],
+        params: &[&dyn ToSql],
     ) -> Res<Vec<Registration>> {
         let select_sql = "SELECT * FROM registrations WHERE ".to_string();
         let sql = select_sql + where_stmt;
 
         let mut stmt = conn.prepare(&sql)?;
         let res = stmt.query_map(params, |row: &rusqlite::Row| {
-            let id: i32 = row.get("id");
-            let date = row.get("date");
-            let dateint: i32 = row.get("dateint");
-            let item_id: i32 = row.get("item_id");
-            let quantity: u32 = row.get("quantity");
+            let id: i32 = row.get("id").unwrap();
+            let date = row.get("date").unwrap();
+            let dateint: i32 = row.get("dateint").unwrap();
+            let item_id: i32 = row.get("item_id").unwrap();
+            let quantity: u32 = row.get("quantity").unwrap();
 
-            Registration {
+            Ok(Registration {
                 id,
                 date,
                 dateint,
                 item_id,
                 quantity,
-            }
+            })
         })?;
 
         Ok(res
